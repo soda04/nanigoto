@@ -267,7 +267,7 @@ function renderZukan() {
       html += `
         <div class="word-card collected">
           <div class="card-word">${word.word}</div>
-          <div class="card-reading">読み：${word.reading}</div>
+          <div class="card-reading">意味：${word.reading}</div>
           <div class="card-meaning">${word.meaning}</div>
           <div class="card-trivia">📖 ${word.trivia}</div>
         </div>
@@ -465,7 +465,7 @@ function showResultPhase(isCorrect, word) {
   }
 
   // 読み・意味・雑学を表示
-  document.getElementById('result-reading').textContent = `読み：${word.reading}`;
+  document.getElementById('result-reading').textContent = `意味：${word.reading}`;
   document.getElementById('result-meaning').textContent = word.meaning;
   document.getElementById('result-trivia').textContent  = `📖 ${word.trivia}`;
 

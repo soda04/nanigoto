@@ -1,7 +1,7 @@
 {
-  "name": "難読語コレクション",
-  "short_name": "難読語",
-  "description": "放置しながら難読語を集める言葉図鑑ゲーム",
+  "name": "トキポナ語コレクション",
+  "short_name": "トキポナ",
+  "description": "放置しながらトキポナ単語を集める言葉図鑑ゲーム",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#1a1c2c",
