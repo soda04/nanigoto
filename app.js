@@ -6,6 +6,7 @@ let currentTopicId  = null;
 let currentQueue    = [];   // シャッフル済みの問題キュー
 let currentIndex    = 0;    // キュー内の現在位置
 let currentQuestion = null; // 出題中の問題オブジェクト
+let currentChoices  = [];   // 現在の選択肢（順番保持用）
 let streak          = 0;    // 現在の連続正解数
 let sessionCorrect  = 0;    // このセッションの正解数
 let sessionAnswered = 0;    // このセッションの回答数
@@ -112,10 +113,10 @@ function showQuestion() {
     codeEl.classList.add('hidden');
   }
 
-  // 選択肢（シャッフル）
-  const choices = shuffleArray([currentQuestion.answer, ...currentQuestion.dummies]);
-  document.getElementById('quiz-choices').innerHTML = choices.map(c => `
-    <button class="choice-btn" onclick="checkAnswer(this, ${JSON.stringify(c)})">
+  // 選択肢（シャッフル）- インデックスで参照してクォート問題を回避
+  currentChoices = shuffleArray([currentQuestion.answer, ...currentQuestion.dummies]);
+  document.getElementById('quiz-choices').innerHTML = currentChoices.map((c, i) => `
+    <button class="choice-btn" onclick="checkAnswer(${i})">
       ${c}
     </button>
   `).join('');
@@ -124,17 +125,17 @@ function showQuestion() {
 // ===================================================
 // 答え合わせ
 // ===================================================
-function checkAnswer(clickedBtn, selected) {
+function checkAnswer(selectedIdx) {
   const q         = currentQuestion;
+  const selected  = currentChoices[selectedIdx];
   const isCorrect = selected === q.answer;
 
   // 全ボタンを無効化して正解・不正解を色で示す
-  document.querySelectorAll('.choice-btn').forEach(btn => {
+  document.querySelectorAll('.choice-btn').forEach((btn, i) => {
     btn.disabled = true;
-    const text = btn.textContent.trim();
-    if (text === q.answer) {
+    if (currentChoices[i] === q.answer) {
       btn.classList.add('correct');
-    } else if (text === selected && !isCorrect) {
+    } else if (i === selectedIdx && !isCorrect) {
       btn.classList.add('wrong');
     }
   });
