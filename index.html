@@ -2,150 +2,71 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <!-- スマホの画面サイズに合わせる設定 -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <!-- ホーム画面から起動したときにアドレスバーを隠す -->
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
-  <meta name="apple-mobile-web-app-title" content="トキポナ">
-  <title>トキポナ語コレクション</title>
-  <!-- PWA用の設定ファイル -->
+  <meta name="apple-mobile-web-app-title" content="コード道場">
+  <title>コード道場</title>
   <link rel="manifest" href="manifest.json">
-  <!-- iPhoneのホーム画面アイコン -->
   <link rel="apple-touch-icon" href="icon-192.png">
-  <!-- スタイルシート -->
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
   <!-- ========================================
-       メイン画面（タブ1）
+       ホーム画面：トピック選択
   ======================================== -->
-  <div id="tab-main" class="tab-content active">
+  <div id="screen-home" class="screen active">
 
-    <!-- ドット絵の風景（集めた言葉の数で賑やかになる） -->
-    <div id="world-view" aria-label="風景"></div>
-
-    <!-- 知識ポイント表示 -->
-    <div id="points-display">
-      <span class="label">★ 知識ポイント</span>
-      <span id="points-value" class="value">0</span>
+    <div class="home-header">
+      <div class="game-title">コード道場</div>
+      <div class="game-subtitle">問題の種類を選んでください</div>
     </div>
 
-    <!-- 言葉の生成メーター -->
-    <div id="meter-section">
-      <div id="meter-label">
-        <span>言葉が湧いてくる...</span>
-        <span id="next-time" class="meter-time"></span>
-      </div>
-      <div id="meter-bar-bg">
-        <div id="meter-bar"></div>
-      </div>
-    </div>
+    <!-- トピックカードのグリッド（JavaScriptで生成） -->
+    <div id="topic-grid" class="topic-grid"></div>
 
-    <!-- 未鑑定バッジ＋鑑定ボタン -->
-    <div id="pending-section">
-      <div id="pending-badge">
-        未鑑定：<span id="pending-count">0</span>個
-      </div>
-      <!-- 未鑑定が1つ以上あると表示される。点滅アニメーション付き -->
-      <button id="assess-btn" class="hidden" onclick="startAssessment()">
-        ▶ 鑑定する
-      </button>
-    </div>
-
-  </div><!-- /tab-main -->
+  </div>
 
 
   <!-- ========================================
-       図鑑画面（タブ2）
+       クイズ画面
   ======================================== -->
-  <div id="tab-zukan" class="tab-content">
+  <div id="screen-quiz" class="screen">
 
-    <div id="zukan-header">
-      <h2>トキポナ図鑑</h2>
-      <div id="complete-rate">
-        コンプリート率：<span id="rate-value">0 / 0</span>
-      </div>
+    <!-- ヘッダー -->
+    <div class="quiz-header">
+      <button class="back-btn" onclick="goHome()">← 戻る</button>
+      <div id="quiz-topic-name" class="quiz-topic-name"></div>
+      <div id="quiz-streak" class="quiz-streak">🔥 0</div>
     </div>
 
-    <!-- カードの一覧。JavaScriptで中身を作る -->
-    <div id="zukan-list"></div>
-
-  </div><!-- /tab-zukan -->
-
-
-  <!-- ========================================
-       強化画面（タブ3）
-  ======================================== -->
-  <div id="tab-upgrade" class="tab-content">
-
-    <h2>アップグレード</h2>
-    <div id="upgrade-points-display">
-      ★ 知識ポイント：<span id="upgrade-points-value">0</span>
+    <!-- 問題フェーズ -->
+    <div id="quiz-question-phase">
+      <div class="question-meta">
+        <span id="question-counter" class="question-counter">問題 1</span>
+        <span id="question-score" class="question-score">正解 0</span>
+      </div>
+      <div id="question-text" class="question-text"></div>
+      <pre id="question-code" class="question-code hidden"></pre>
+      <div id="quiz-choices" class="choices-list"></div>
     </div>
 
-    <!-- アップグレード項目。JavaScriptで中身を作る -->
-    <div id="upgrade-list"></div>
-
-  </div><!-- /tab-upgrade -->
-
-
-  <!-- ========================================
-       鑑定モーダル（タップで開くポップアップ）
-  ======================================== -->
-  <div id="assessment-modal" class="modal hidden" role="dialog" aria-modal="true">
-    <div class="modal-box">
-
-      <!-- クイズ出題フェーズ -->
-      <div id="quiz-phase">
-        <p id="quiz-hint" class="quiz-hint">この単語の意味は？</p>
-        <!-- お題の漢字を大きく表示 -->
-        <div id="quiz-word" class="quiz-word"></div>
-        <!-- 4択のボタン。JavaScriptで作る -->
-        <div id="choices" class="choices-grid"></div>
-        <!-- モーダルを閉じるボタン -->
-        <button class="close-btn" onclick="closeModal()">✕ やめる</button>
+    <!-- 結果フェーズ -->
+    <div id="quiz-result-phase" class="hidden">
+      <div id="quiz-result-icon" class="result-icon"></div>
+      <div id="quiz-result-message" class="result-message"></div>
+      <div class="result-detail">
+        <div id="quiz-correct-answer" class="correct-answer-label"></div>
+        <div id="quiz-explanation" class="explanation-text"></div>
       </div>
-
-      <!-- 結果表示フェーズ -->
-      <div id="result-phase" class="hidden">
-        <div id="result-icon" class="result-icon"></div>
-        <div id="result-message" class="result-message"></div>
-        <div id="result-detail" class="result-detail">
-          <div id="result-reading" class="result-reading"></div>
-          <div id="result-meaning" class="result-meaning"></div>
-          <div id="result-trivia" class="result-trivia"></div>
-        </div>
-        <!-- 次の言葉へ or 閉じる -->
-        <button id="next-btn" onclick="nextAssessment()">次へ ▶</button>
-      </div>
-
+      <button id="next-question-btn" class="next-btn" onclick="nextQuestion()">次の問題 ▶</button>
     </div>
-  </div><!-- /assessment-modal -->
+
+  </div>
 
 
-  <!-- ========================================
-       下部タブバー（画面切り替え）
-  ======================================== -->
-  <nav id="tab-bar">
-    <button class="tab-btn active" onclick="switchTab('main', this)">
-      <span class="tab-icon">🏠</span>
-      <span class="tab-label">メイン</span>
-    </button>
-    <button class="tab-btn" onclick="switchTab('zukan', this)">
-      <span class="tab-icon">📖</span>
-      <span class="tab-label">図鑑</span>
-    </button>
-    <button class="tab-btn" onclick="switchTab('upgrade', this)">
-      <span class="tab-icon">⬆</span>
-      <span class="tab-label">強化</span>
-    </button>
-  </nav>
-
-
-  <!-- JavaScriptファイルの読み込み（bodyの末尾に置くのが基本） -->
-  <script src="words.js"></script>
+  <script src="questions.js"></script>
   <script src="app.js"></script>
 </body>
 </html>

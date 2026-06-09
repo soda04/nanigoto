@@ -1,7 +1,7 @@
 {
-  "name": "トキポナ語コレクション",
-  "short_name": "トキポナ",
-  "description": "放置しながらトキポナ単語を集める言葉図鑑ゲーム",
+  "name": "コード道場",
+  "short_name": "コード道場",
+  "description": "プログラミング言語をクイズ形式で学ぶアプリ",
   "start_url": "./index.html",
   "display": "standalone",
   "background_color": "#1a1c2c",
