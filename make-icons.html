@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<!--
+  アイコン生成ツール
+  このファイルをブラウザで開いて「192×192を保存」「512×512を保存」
+  のボタンを押すと、icon-192.png と icon-512.png がダウンロードされます。
+  ダウンロードしたファイルをこのフォルダに置いてください。
+-->
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>アイコン生成</title>
+  <style>
+    body { font-family: monospace; background: #1a1c2c; color: #c8d4e8; padding: 20px; }
+    canvas { border: 2px solid #4a4e69; display: block; margin: 10px 0; }
+    button { font-family: monospace; background: #f4d03f; border: 3px solid #a07000;
+             color: #1a1a00; padding: 10px 20px; font-size: 14px; cursor: pointer;
+             margin: 5px; }
+    h2 { color: #f4d03f; }
+  </style>
+</head>
+<body>
+  <h2>難読語コレクション — アイコン生成ツール</h2>
+  <p>下のボタンを押すと PNG がダウンロードされます。</p>
+  <p>ダウンロードしたファイルをゲームフォルダに置いてください。</p>
+
+  <canvas id="canvas192" width="192" height="192"></canvas>
+  <button onclick="downloadIcon(192)">icon-192.png をダウンロード</button>
+
+  <canvas id="canvas512" width="512" height="512"></canvas>
+  <button onclick="downloadIcon(512)">icon-512.png をダウンロード</button>
+
+  <script>
+    // ドット絵風のアイコンを Canvas で描く
+    function drawIcon(canvas) {
+      const size = canvas.width;
+      const ctx  = canvas.getContext('2d');
+      const s    = size / 192; // 192を基準にスケール
+
+      // 背景
+      ctx.fillStyle = '#1a1c2c';
+      ctx.fillRect(0, 0, size, size);
+
+      // 外枠（レトロ風）
+      ctx.strokeStyle = '#f4d03f';
+      ctx.lineWidth   = 8 * s;
+      ctx.strokeRect(8 * s, 8 * s, size - 16 * s, size - 16 * s);
+
+      // 内側の本の形（シンプルなドット絵風）
+      ctx.fillStyle = '#0f3460';
+      ctx.fillRect(40 * s, 36 * s, 112 * s, 130 * s);
+
+      // 本の縦線（ノド）
+      ctx.fillStyle = '#4a4e69';
+      ctx.fillRect(92 * s, 36 * s, 8 * s, 130 * s);
+
+      // 本のページライン（左）
+      ctx.fillStyle = '#6b7aad';
+      for (let i = 0; i < 5; i++) {
+        ctx.fillRect(50 * s, (56 + i * 18) * s, 32 * s, 4 * s);
+      }
+
+      // 本のページライン（右）
+      for (let i = 0; i < 5; i++) {
+        ctx.fillRect(110 * s, (56 + i * 18) * s, 32 * s, 4 * s);
+      }
+
+      // 金色の文字「言」
+      ctx.fillStyle = '#f4d03f';
+      ctx.font      = `bold ${36 * s}px monospace`;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('言', size / 2, size / 2 + 10 * s);
+
+      // 星（装飾）
+      ctx.fillStyle = '#f4d03f';
+      ctx.font      = `${16 * s}px monospace`;
+      ctx.fillText('★', 30 * s, 30 * s);
+      ctx.fillText('★', size - 30 * s, size - 30 * s);
+    }
+
+    // 描画実行
+    ['192', '512'].forEach(sz => {
+      const canvas = document.getElementById('canvas' + sz);
+      drawIcon(canvas);
+    });
+
+    // ダウンロード関数
+    function downloadIcon(size) {
+      const canvas = document.getElementById('canvas' + size);
+      const link   = document.createElement('a');
+      link.download = `icon-${size}.png`;
+      link.href     = canvas.toDataURL('image/png');
+      link.click();
+    }
+  </script>
+</body>
+</html>

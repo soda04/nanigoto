@@ -30,6 +30,19 @@
 
 
   <!-- ========================================
+       単語一覧画面（トキポナ語）
+  ======================================== -->
+  <div id="screen-wordlist" class="screen">
+    <div class="quiz-header">
+      <button class="back-btn" onclick="goHome()">← 戻る</button>
+      <div class="quiz-topic-name">トキポナ語 単語一覧</div>
+      <div></div>
+    </div>
+    <div id="wordlist-container" class="wordlist-container"></div>
+  </div>
+
+
+  <!-- ========================================
        クイズ画面
   ======================================== -->
   <div id="screen-quiz" class="screen">
@@ -56,6 +69,8 @@
     <div id="quiz-result-phase" class="hidden">
       <div id="quiz-result-icon" class="result-icon"></div>
       <div id="quiz-result-message" class="result-message"></div>
+      <pre id="quiz-result-code" class="question-code hidden"></pre>
+      <div id="quiz-result-reading" class="result-reading hidden"></div>
       <div class="result-detail">
         <div id="quiz-correct-answer" class="correct-answer-label"></div>
         <div id="quiz-explanation" class="explanation-text"></div>
@@ -66,6 +81,7 @@
   </div>
 
 
+  <script src="words.js"></script>
   <script src="questions.js"></script>
   <script src="app.js"></script>
 </body>

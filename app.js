@@ -13,6 +13,42 @@ let sessionAnswered = 0;    // このセッションの回答数
 let saveData        = {};   // トピックごとの通算統計
 
 // ===================================================
+// トキポナ語カタカナ変換
+// ===================================================
+function tokiPonaToKatakana(word) {
+  if (word.includes(' / ')) {
+    return word.split(' / ').map(w => tokiPonaToKatakana(w.trim())).join(' / ');
+  }
+  const map = {
+    'a':'ア','e':'エ','i':'イ','o':'オ','u':'ウ',
+    'ja':'ヤ','je':'イェ','jo':'ヨ','ju':'ユ',
+    'ka':'カ','ke':'ケ','ki':'キ','ko':'コ','ku':'ク',
+    'la':'ラ','le':'レ','li':'リ','lo':'ロ','lu':'ル',
+    'ma':'マ','me':'メ','mi':'ミ','mo':'モ','mu':'ム',
+    'na':'ナ','ne':'ネ','ni':'ニ','no':'ノ','nu':'ヌ',
+    'pa':'パ','pe':'ペ','pi':'ピ','po':'ポ','pu':'プ',
+    'sa':'サ','se':'セ','si':'シ','so':'ソ','su':'ス',
+    'ta':'タ','te':'テ','ti':'チ','to':'ト','tu':'ツ',
+    'wa':'ワ','we':'ウェ','wi':'ウィ',
+  };
+  const vowels = new Set(['a','e','i','o','u']);
+  const consonants = new Set(['j','k','l','m','n','p','s','t','w']);
+  let result = '';
+  let i = 0;
+  while (i < word.length) {
+    let syl = '';
+    if (consonants.has(word[i])) syl += word[i++];
+    if (i < word.length && vowels.has(word[i])) syl += word[i++];
+    result += map[syl] || syl;
+    if (i < word.length && word[i] === 'n') {
+      const atEnd = (i + 1 >= word.length) || consonants.has(word[i + 1]);
+      if (atEnd) { result += 'ン'; i++; }
+    }
+  }
+  return result;
+}
+
+// ===================================================
 // セーブデータ
 // ===================================================
 function loadSave() {
@@ -43,8 +79,11 @@ function renderTopicGrid() {
       ? Math.round(st.correct / st.answered * 100) + '%'
       : '--';
     const best = st.bestStreak > 0 ? `🔥${st.bestStreak}` : '';
+    const listBtn = topic.id === 'tokipona'
+      ? `<button class="topic-list-btn" onclick="event.stopPropagation(); openWordlist()">📖 一覧</button>`
+      : '';
     return `
-      <button class="topic-card" onclick="startTopic('${topic.id}')">
+      <div class="topic-card" onclick="startTopic('${topic.id}')">
         <span class="topic-icon">${topic.icon}</span>
         <span class="topic-name">${topic.name}</span>
         <span class="topic-desc">${topic.desc}</span>
@@ -52,9 +91,26 @@ function renderTopicGrid() {
           <span class="topic-rate">${rate}</span>
           ${best ? `<span class="topic-best">${best}</span>` : ''}
         </span>
-      </button>
+        ${listBtn}
+      </div>
     `;
   }).join('');
+}
+
+function openWordlist() {
+  showScreen('wordlist');
+  renderWordlist();
+}
+
+function renderWordlist() {
+  const container = document.getElementById('wordlist-container');
+  container.innerHTML = WORDS.map(w => `
+    <div class="word-card">
+      <div class="wc-word">${w.word}</div>
+      <div class="wc-kana">${tokiPonaToKatakana(w.word)}</div>
+      <div class="wc-meaning">${w.reading}</div>
+    </div>
+  `).join('');
 }
 
 function goHome() {
@@ -117,7 +173,7 @@ function showQuestion() {
   currentChoices = shuffleArray([currentQuestion.answer, ...currentQuestion.dummies]);
   document.getElementById('quiz-choices').innerHTML = currentChoices.map((c, i) => `
     <button class="choice-btn" onclick="checkAnswer(${i})">
-      ${c}
+      ${escapeHtml(c)}
     </button>
   `).join('');
 }
@@ -181,6 +237,22 @@ function showResult(isCorrect, q) {
     msgEl.textContent  = '不正解...';
   }
 
+  const resultCodeEl    = document.getElementById('quiz-result-code');
+  const resultReadingEl = document.getElementById('quiz-result-reading');
+  if (q.code) {
+    resultCodeEl.textContent = q.code;
+    resultCodeEl.classList.remove('hidden');
+    if (currentTopicId === 'tokipona') {
+      resultReadingEl.textContent = tokiPonaToKatakana(q.code);
+      resultReadingEl.classList.remove('hidden');
+    } else {
+      resultReadingEl.classList.add('hidden');
+    }
+  } else {
+    resultCodeEl.classList.add('hidden');
+    resultReadingEl.classList.add('hidden');
+  }
+
   document.getElementById('quiz-correct-answer').textContent = `正解：${q.answer}`;
   document.getElementById('quiz-explanation').textContent    = q.exp;
 
@@ -203,6 +275,10 @@ function updateStreakDisplay() {
 function showScreen(id) {
   document.querySelectorAll('.screen').forEach(el => el.classList.remove('active'));
   document.getElementById('screen-' + id).classList.add('active');
+}
+
+function escapeHtml(str) {
+  return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 }
 
 // フィッシャー・イェーツ法によるシャッフル

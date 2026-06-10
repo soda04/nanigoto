@@ -110,10 +110,12 @@ button:active {
   gap: 4px;
   padding: 14px 8px;
   background: var(--bg-panel);
-  border-color: var(--border);
+  border: 2px solid var(--border);
+  border-radius: 4px;
   color: var(--text-main);
   text-align: center;
   box-shadow: 0 4px 0 var(--bg-dark);
+  cursor: pointer;
 }
 
 .topic-card:hover {
@@ -158,6 +160,63 @@ button:active {
 .topic-best {
   font-size: 11px;
   color: var(--accent-red);
+}
+
+.topic-list-btn {
+  margin-top: 6px;
+  padding: 3px 10px;
+  font-size: 11px;
+  background: transparent;
+  border: 1px solid var(--accent-blue);
+  color: var(--accent-blue);
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.topic-list-btn:hover {
+  background: var(--accent-blue);
+  color: #000;
+}
+
+/* ===================================================
+   単語一覧画面
+   =================================================== */
+.wordlist-container {
+  overflow-y: auto;
+  flex: 1;
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.word-card {
+  background: var(--bg-panel);
+  border: 2px solid var(--border);
+  border-left: 4px solid var(--accent-blue);
+  padding: 10px 14px;
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+}
+
+.wc-word {
+  font-size: 20px;
+  font-weight: bold;
+  color: var(--text-bright);
+  min-width: 80px;
+}
+
+.wc-kana {
+  font-size: 13px;
+  color: var(--text-dim);
+  min-width: 70px;
+}
+
+.wc-meaning {
+  font-size: 13px;
+  color: var(--text-main);
+  flex: 1;
 }
 
 /* ===================================================
@@ -320,6 +379,14 @@ button:active {
   text-align: center;
   color: var(--text-bright);
   font-weight: bold;
+}
+
+.result-reading {
+  text-align: center;
+  font-size: 15px;
+  color: var(--text-dim);
+  letter-spacing: 0.05em;
+  margin: 2px 14px 8px;
 }
 
 .result-detail {
