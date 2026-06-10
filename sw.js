@@ -1,9 +1,10 @@
-const CACHE = 'code-dojo-v1';
+const CACHE = 'code-dojo-v2';
 const FILES = [
   './',
   './index.html',
   './style.css',
   './app.js',
+  './words.js',
   './questions.js',
   './manifest.json',
   './icon-192.png',
