@@ -196,8 +196,25 @@ button:active {
   border-left: 4px solid var(--accent-blue);
   padding: 10px 14px;
   display: flex;
+  flex-direction: column;
+  gap: 0;
+  cursor: pointer;
+  user-select: none;
+}
+
+.wc-main {
+  display: flex;
   align-items: baseline;
   gap: 12px;
+}
+
+.wc-detail {
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid var(--border);
+  font-size: 13px;
+  color: var(--text-dim);
+  line-height: 1.6;
 }
 
 .wc-word {

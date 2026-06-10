@@ -104,13 +104,21 @@ function openWordlist() {
 
 function renderWordlist() {
   const container = document.getElementById('wordlist-container');
-  container.innerHTML = WORDS.map(w => `
-    <div class="word-card">
-      <div class="wc-word">${w.word}</div>
-      <div class="wc-kana">${tokiPonaToKatakana(w.word)}</div>
-      <div class="wc-meaning">${w.reading}</div>
+  container.innerHTML = QUESTIONS.tokipona.map((q, i) => `
+    <div class="word-card" onclick="toggleWordDetail(${i})">
+      <div class="wc-main">
+        <div class="wc-word">${q.code}</div>
+        <div class="wc-kana">${tokiPonaToKatakana(q.code)}</div>
+        <div class="wc-meaning">${q.answer}</div>
+      </div>
+      <div class="wc-detail hidden" id="wcd-${i}">${escapeHtml(q.exp)}</div>
     </div>
   `).join('');
+}
+
+function toggleWordDetail(i) {
+  const el = document.getElementById('wcd-' + i);
+  el.classList.toggle('hidden');
 }
 
 function goHome() {
