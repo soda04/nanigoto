@@ -243,6 +243,17 @@ button:active {
   flex: 1;
 }
 
+.wc-rate {
+  font-size: 12px;
+  min-width: 36px;
+  text-align: right;
+  flex-shrink: 0;
+}
+.wc-rate.dim  { color: var(--text-dim); }
+.wc-rate.good { color: var(--accent-green); }
+.wc-rate.mid  { color: var(--accent-gold); }
+.wc-rate.bad  { color: var(--accent-red); }
+
 /* ===================================================
    クイズ画面
    =================================================== */

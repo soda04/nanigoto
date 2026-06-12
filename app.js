@@ -68,6 +68,14 @@ function getStats(topicId) {
   return saveData.stats[topicId];
 }
 
+function getWordStats(questionId) {
+  if (!saveData.wordStats) saveData.wordStats = {};
+  if (!saveData.wordStats[questionId]) {
+    saveData.wordStats[questionId] = { correct: 0, answered: 0 };
+  }
+  return saveData.wordStats[questionId];
+}
+
 // ===================================================
 // ホーム画面
 // ===================================================
@@ -109,16 +117,27 @@ function openWordlist() {
 
 function renderWordlist() {
   const container = document.getElementById('wordlist-container');
-  container.innerHTML = QUESTIONS.tokipona.map((q, i) => `
-    <div class="word-card" onclick="toggleWordDetail(${i})">
-      <div class="wc-main">
-        <div class="wc-word">${q.code}</div>
-        <div class="wc-kana">${tokiPonaToKatakana(q.code)}</div>
-        <div class="wc-meaning">${q.answer}</div>
+  container.innerHTML = QUESTIONS.tokipona.map((q, i) => {
+    const ws = getWordStats(q.id);
+    const rate = ws.answered > 0
+      ? Math.round(ws.correct / ws.answered * 100) + '%'
+      : '--';
+    const rateClass = ws.answered === 0 ? 'wc-rate dim'
+      : ws.correct / ws.answered >= 0.8 ? 'wc-rate good'
+      : ws.correct / ws.answered >= 0.5 ? 'wc-rate mid'
+      : 'wc-rate bad';
+    return `
+      <div class="word-card" onclick="toggleWordDetail(${i})">
+        <div class="wc-main">
+          <div class="wc-word">${q.code}</div>
+          <div class="wc-kana">${tokiPonaToKatakana(q.code)}</div>
+          <div class="wc-meaning">${q.answer}</div>
+          <div class="${rateClass}">${rate}</div>
+        </div>
+        <div class="wc-detail hidden" id="wcd-${i}">${escapeHtml(q.exp)}</div>
       </div>
-      <div class="wc-detail hidden" id="wcd-${i}">${escapeHtml(q.exp)}</div>
-    </div>
-  `).join('');
+    `;
+  }).join('');
 }
 
 function toggleWordDetail(i) {
@@ -222,6 +241,13 @@ function checkAnswer(selectedIdx) {
   st.answered++;
   if (isCorrect) st.correct++;
   if (streak > st.bestStreak) st.bestStreak = streak;
+
+  if (currentTopicId === 'tokipona' && currentQuestion.id) {
+    const ws = getWordStats(currentQuestion.id);
+    ws.answered++;
+    if (isCorrect) ws.correct++;
+  }
+
   writeSave();
 
   updateStreakDisplay();
