@@ -181,6 +181,13 @@ button:active {
 /* ===================================================
    単語一覧画面
    =================================================== */
+.wordlist-rate {
+  font-size: 14px;
+  color: var(--accent-gold);
+  flex-shrink: 0;
+  min-width: 52px;
+  text-align: right;
+}
 .wordlist-container {
   overflow-y: auto;
   flex: 1;

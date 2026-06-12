@@ -99,6 +99,11 @@ function renderTopicGrid() {
 
 function openWordlist() {
   showScreen('wordlist');
+  const st = getStats('tokipona');
+  const rate = st.answered > 0
+    ? Math.round(st.correct / st.answered * 100) + '%'
+    : '--';
+  document.getElementById('wordlist-rate').textContent = rate;
   renderWordlist();
 }
 
