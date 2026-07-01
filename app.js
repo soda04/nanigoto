@@ -52,13 +52,21 @@ function tokiPonaToKatakana(word) {
 // セーブデータ
 // ===================================================
 function loadSave() {
-  const raw = localStorage.getItem('code_dojo_v1');
-  saveData = raw ? JSON.parse(raw) : { stats: {} };
+  try {
+    const raw = localStorage.getItem('code_dojo_v1');
+    saveData = raw ? JSON.parse(raw) : { stats: {} };
+  } catch (e) {
+    saveData = { stats: {} };
+  }
   if (!saveData.stats) saveData.stats = {};
 }
 
 function writeSave() {
-  localStorage.setItem('code_dojo_v1', JSON.stringify(saveData));
+  try {
+    localStorage.setItem('code_dojo_v1', JSON.stringify(saveData));
+  } catch (e) {
+    // localStorage が使えない環境（プライベートモード等）では無視
+  }
 }
 
 function getStats(topicId) {
