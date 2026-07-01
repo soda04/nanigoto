@@ -150,8 +150,15 @@ function toggleWordDetail(i) {
 }
 
 function revealMeaning(i) {
-  document.getElementById('wcm-' + i).classList.remove('hidden');
-  document.getElementById('wcb-' + i).classList.add('hidden');
+  const meaning = document.getElementById('wcm-' + i);
+  const btn = document.getElementById('wcb-' + i);
+  if (meaning.classList.contains('hidden')) {
+    meaning.classList.remove('hidden');
+    btn.textContent = '隠す';
+  } else {
+    meaning.classList.add('hidden');
+    btn.textContent = '意味を見る';
+  }
 }
 
 function goHome() {
