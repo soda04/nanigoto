@@ -134,7 +134,8 @@ function renderWordlist() {
         <div class="wc-main">
           <div class="wc-word">${q.code}</div>
           <div class="wc-kana">${tokiPonaToKatakana(q.code)}</div>
-          <div class="wc-meaning">${q.answer}</div>
+          <button class="wc-reveal-btn" id="wcb-${i}" onclick="event.stopPropagation(); revealMeaning(${i})">意味を見る</button>
+          <div class="wc-meaning hidden" id="wcm-${i}">${q.answer}</div>
           <div class="${rateClass}">${rate}</div>
         </div>
         <div class="wc-detail hidden" id="wcd-${i}">${escapeHtml(q.exp)}</div>
@@ -146,6 +147,11 @@ function renderWordlist() {
 function toggleWordDetail(i) {
   const el = document.getElementById('wcd-' + i);
   el.classList.toggle('hidden');
+}
+
+function revealMeaning(i) {
+  document.getElementById('wcm-' + i).classList.remove('hidden');
+  document.getElementById('wcb-' + i).classList.add('hidden');
 }
 
 function goHome() {
